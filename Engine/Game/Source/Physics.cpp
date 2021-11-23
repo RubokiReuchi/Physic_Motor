@@ -29,20 +29,20 @@ bool Physics::Awake()
 bool Physics::Start()
 {
 	// Set physics properties of the ball
-	ball.mass = 1; // kg
-	ball.rad = 50;
+	ball->mass = 1; // kg
+	ball->rad = 5;
 	//ball.surface = 2; // m^2
 
 	// Set initial position and velocity of the ball
-	ball.x = 50.0;
-	ball.y = 200.0;
-	ball.vx = 0.5;
-	ball.vy = -0.5;
+	ball->x = 50.0;
+	ball->y = 200.0;
+	ball->vx = 0.5;
+	ball->vy = -0.5;
 
-	ground.x = 0;
-	ground.y = 500;
-	ground.w = 1200;
-	ground.h = 50;
+	ground->x = 0;
+	ground->y = 500;
+	ground->w = 1200;
+	ground->h = 50;
 
 	return true;
 }
@@ -57,59 +57,59 @@ bool Physics::PreUpdate()
 bool Physics::Update(float dt)
 {
 	// Step #0: Reset total acceleration and total accumulated force of the ball (clear old values)
-	ball.fx = ball.fy = 0.0;
-	ball.ax = ball.ay = 0.0;
+	ball->fx = ball->fy = 0.0;
+	ball->ax = ball->ay = 0.0;
 
 
 	// Step #1: Compute forces
 
 		// Compute Gravity force
-	double fgx = ball.mass * 0.0;
+	double fgx = ball->mass * 0.0;
 	double fgy;
-	if (ball.gravity_enabled)
+	if (ball->gravity_enabled)
 	{
-		fgy = ball.mass * 0.001; // Let's assume gravity is constant and downwards
+		fgy = ball->mass * 0.001; // Let's assume gravity is constant and downwards
 	}
 	
 
 	// Add gravity force to the total accumulated force of the ball
-	if (ball.physics_enabled)
+	if (ball->physics_enabled)
 	{
-		ball.fx += fgx;
-		if (ball.gravity_enabled)
+		ball->fx += fgx;
+		if (ball->gravity_enabled)
 		{
-			ball.fy += fgy;
+			ball->fy += fgy;
 		}
 	}
 
 
 	// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
-	ball.ax = ball.fx / ball.mass;
-	ball.ay = ball.fy / ball.mass;
+	ball->ax = ball->fx / ball->mass;
+	ball->ay = ball->fy / ball->mass;
 
 	// Step #3: Integrate --> from accel to new velocity & new position. 
 	// We will use the 2nd order "Velocity Verlet" method for integration.
 	// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
 
-	ball.x += ball.vx * dt + 0.5 * ball.ax * dt * dt;
-	ball.y += ball.vy * dt + 0.5 * ball.ay * dt * dt;
-	ball.vx += ball.ax * dt;
-	ball.vy += ball.ay * dt;
+	ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
+	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
+	ball->vx += ball->ax * dt;
+	ball->vy += ball->ay * dt;
 
 	// Step #4: solve collisions
-	if (ball.y > ground.y - ball.rad)
+	if (ball->y > ground->y - ball->rad)
 	{
 		// For now, just stop the ball when it reaches the ground.
-		ball.vx = ball.vx / 2;
-		ball.vy = -ball.vy / 2;
-		ball.ax = ball.ay = 0.0;
-		ball.fx = ball.fy = 0.0;
-		if (ball.vy > -0.05 && ball.vy < 0.05)
+		ball->vx = ball->vx * 0.5;
+		ball->vy = -ball->vy * 0.5;
+		ball->ax = ball->ay = 0.0;
+		ball->fx = ball->fy = 0.0;
+		if (ball->vy > -0.01 && ball->vy < 0.01)
 		{
-			ball.vy = 0.0;
-			ball.gravity_enabled = false;
+			ball->vy = 0.0;
+			ball->gravity_enabled = false;
 		}
-		//ball.physics_enabled = false;
+		//ball->physics_enabled = false;
 	}
 
 	return true;
@@ -128,8 +128,8 @@ bool Physics::PostUpdate()
 	if (!debug)
 		return true;
 
-	app->render->DrawCircle(ball.x, ball.y, ball.rad, 255, 0, 0);
-	app->render->DrawRectangle({ ground.x, ground.y, ground.w, ground.h }, 0, 255, 0, 255, false);
+	app->render->DrawCircle(ball->x, ball->y, ball->rad, 255, 0, 0);
+	app->render->DrawRectangle({ ground->x, ground->y, ground->w, ground->h }, 0, 255, 0, 255, false);
 
 	return true;
 }

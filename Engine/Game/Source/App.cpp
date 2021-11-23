@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include "Scene.h"
 #include "Physics.h"
+#include "Player.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -23,6 +24,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	audio = new Audio();
 	scene = new Scene();
 	physics = new Physics();
+	player = new Player();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -32,6 +34,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(audio);
 	AddModule(scene);
 	AddModule(physics);
+	AddModule(player);
 
 	// Render last to swap buffer
 	AddModule(render);

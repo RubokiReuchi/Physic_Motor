@@ -16,6 +16,7 @@ class Textures;
 class Audio;
 class Scene;
 class Physics;
+class Player;
 
 class App
 {
@@ -74,6 +75,7 @@ public:
 	Audio* audio;
 	Scene* scene;
 	Physics* physics;
+	Player* player;
 
 private:
 

@@ -5,8 +5,9 @@
 #include "Defs.h"
 #include "Log.h"
 
-struct Ball
+class Ball
 {
+public:
 	// Position
 	// You could also use an array/vector
 	double x;
@@ -41,8 +42,9 @@ struct Ball
 	bool gravity_enabled = true;
 };
 
-struct Ground
+class Ground
 {
+public:
 	int x;
 	int y;
 	int w;
@@ -70,8 +72,8 @@ public:
 
 	void integrator_velocity_verlet(Ball& ball, double dt);
 
-	Ball ball;
-	Ground ground;
+	Ball* ball;
+	Ground* ground;
 
 private:
 
