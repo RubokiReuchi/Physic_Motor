@@ -1,0 +1,6 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(499,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  Physics.cpp
+C:\Users\rubenaa3\Desktop\L01_Intro_to_XML.Handout\Game\Source\Physics.cpp(131,46): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+C:\Users\rubenaa3\Desktop\L01_Intro_to_XML.Handout\Game\Source\Physics.cpp(131,38): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+C:\Users\rubenaa3\Desktop\L01_Intro_to_XML.Handout\Game\Source\Physics.cpp(131,30): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  Game.vcxproj -> C:\Users\rubenaa3\Desktop\L01_Intro_to_XML.Handout\Build\Debug\Game.exe
