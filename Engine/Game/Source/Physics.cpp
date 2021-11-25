@@ -6,6 +6,12 @@
 #include "math.h"
 #include <cmath>
 
+#define METERS_PER_PIXEL 0.02f
+#define PIXELS_PER_METER 50.0f
+
+#define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
+#define PIXELS_TO_METERS(p) ((float) METERS_PER_PIXEL * p)
+
 // TODO 1: Include Box 2 header and library
 
 Physics::Physics() : Module()
@@ -28,21 +34,25 @@ bool Physics::Awake()
 
 bool Physics::Start()
 {
+	ball = new Ball();
+	ground = new Ground();
 	// Set physics properties of the ball
-	ball->mass = 1; // kg
-	ball->rad = 5;
+	ball->mass = 2; // kg
+	ball->rad = PIXELS_TO_METERS(5);
 	//ball.surface = 2; // m^2
 
 	// Set initial position and velocity of the ball
-	ball->x = 50.0;
-	ball->y = 200.0;
-	ball->vx = 0.5;
-	ball->vy = -0.5;
+	ball->x = PIXELS_TO_METERS(50.0);
+	ball->y = PIXELS_TO_METERS(200.0);
+	ball->vx = 0.2;
+	ball->vy = -2;
 
-	ground->x = 0;
-	ground->y = 500;
-	ground->w = 1200;
-	ground->h = 50;
+	ball->cd = 0.4;
+	ball->surface = ball->rad * M_PI;
+	ground->x = PIXELS_TO_METERS(0);
+	ground->y = PIXELS_TO_METERS(500);
+	ground->w = PIXELS_TO_METERS(1200);
+	ground->h = PIXELS_TO_METERS(50);
 
 	return true;
 }
@@ -66,10 +76,7 @@ bool Physics::Update(float dt)
 		// Compute Gravity force
 	double fgx = ball->mass * 0.0;
 	double fgy;
-	if (ball->gravity_enabled)
-	{
-		fgy = ball->mass * 0.001; // Let's assume gravity is constant and downwards
-	}
+	fgy = ball->mass * 10; // Let's assume gravity is constant and downwards
 	
 
 	// Add gravity force to the total accumulated force of the ball
@@ -82,6 +89,12 @@ bool Physics::Update(float dt)
 		}
 	}
 
+	if (app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		double fdrag = 0.5 * ball->vx * ball->vx * ball->surface * ball->cd;
+		double fdx = -fdrag;
+		ball->fx += fdx;
+	}
 
 	// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
 	ball->ax = ball->fx / ball->mass;
@@ -92,14 +105,16 @@ bool Physics::Update(float dt)
 	// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
 
 	ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
+	LOG("%f", ball->x);
 	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
 	ball->vx += ball->ax * dt;
 	ball->vy += ball->ay * dt;
 
 	// Step #4: solve collisions
-	if (ball->y > ground->y - ball->rad)
+	if (ball->y >= ground->y - ball->rad)
 	{
 		// For now, just stop the ball when it reaches the ground.
+		ball->y = ground->y - ball->rad;
 		ball->vx = ball->vx * 0.5;
 		ball->vy = -ball->vy * 0.5;
 		ball->ax = ball->ay = 0.0;
@@ -110,6 +125,10 @@ bool Physics::Update(float dt)
 			ball->gravity_enabled = false;
 		}
 		//ball->physics_enabled = false;
+	}
+	else
+	{
+		ball->vx = ball->vx * 0.99;
 	}
 
 	return true;
@@ -128,8 +147,8 @@ bool Physics::PostUpdate()
 	if (!debug)
 		return true;
 
-	app->render->DrawCircle(ball->x, ball->y, ball->rad, 255, 0, 0);
-	app->render->DrawRectangle({ ground->x, ground->y, ground->w, ground->h }, 0, 255, 0, 255, false);
+	app->render->DrawCircle(METERS_TO_PIXELS(ball->x), METERS_TO_PIXELS(ball->y), METERS_TO_PIXELS(ball->rad), 255, 0, 0);
+	app->render->DrawRectangle({ METERS_TO_PIXELS(ground->x), METERS_TO_PIXELS(ground->y), METERS_TO_PIXELS(ground->w), METERS_TO_PIXELS(ground->h) }, 0, 255, 0, 255, false);
 
 	return true;
 }

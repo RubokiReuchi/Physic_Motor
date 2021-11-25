@@ -1,6 +1,7 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(499,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-  Player.cpp
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(41,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(42,10): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-  LINK : C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Build\Debug\Game.exe not found or not built by the last incremental link; performing full link
+  Physics.cpp
+C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(52,14): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(53,14): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(54,14): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(55,14): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   Game.vcxproj -> C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Build\Debug\Game.exe

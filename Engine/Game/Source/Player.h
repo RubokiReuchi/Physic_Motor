@@ -28,7 +28,7 @@ private:
 	int x, y, w = 50, h = 50;
 	float speed = 5;
 
-	Ball* body;
+	//Ball* body;
 };
 
 #endif

@@ -33,10 +33,10 @@ public:
 	double mass;
 
 	// Aerodynamics stuff
-	/*double surface; // Effective wet surface
+	double surface; // Effective wet surface
 	double cl; // Lift coefficient
 	double cd; // Drag coefficient
-	*/
+	
 	// Has physics enabled?
 	bool physics_enabled = true;
 	bool gravity_enabled = true;

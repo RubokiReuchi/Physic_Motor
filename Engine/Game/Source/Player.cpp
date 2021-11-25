@@ -30,9 +30,9 @@ bool Player::Start()
 // 
 bool Player::PreUpdate()
 {
-	x = body->x;
+	/*x = body->x;
 	y = body->y;
-
+	*/
 	return true;
 }
 
@@ -55,7 +55,7 @@ bool Player::Update(float dt)
 // 
 bool Player::PostUpdate()
 {
-	app->render->DrawRectangle({ x, y, w, h }, 0, 0, 255, 255, false);
+	//app->render->DrawRectangle({ x, y, w, h }, 0, 0, 255, 255, false);
 
 	return true;
 }
