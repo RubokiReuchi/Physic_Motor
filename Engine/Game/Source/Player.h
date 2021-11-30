@@ -5,6 +5,8 @@
 #include "Defs.h"
 #include "Log.h"
 
+class Ball;
+
 class Player : public Module
 {
 public:
@@ -25,10 +27,15 @@ public:
 	bool CleanUp();
 
 private:
-	int x, y, w = 50, h = 50;
+	int x, y, r = 5;
 	float speed = 5;
 
-	//Ball* body;
+	int body;
+
+	double angle_shot = 0;
+	double strength = 0;
+	double objective_x;
+	double objective_y;
 };
 
 #endif

@@ -4,6 +4,14 @@
 #include "Module.h"
 #include "Defs.h"
 #include "Log.h"
+#include "DynArray.h"
+#include "Point.h"
+
+#define METERS_PER_PIXEL 0.02f
+#define PIXELS_PER_METER 50.0f
+
+#define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
+#define PIXELS_TO_METERS(p) ((float) METERS_PER_PIXEL * p)
 
 class Ball
 {
@@ -40,6 +48,10 @@ public:
 	// Has physics enabled?
 	bool physics_enabled = true;
 	bool gravity_enabled = true;
+
+	void SetVelocity(double vx, double vy);
+
+	dPoint GetVelocity();
 };
 
 class Ground
@@ -70,14 +82,18 @@ public:
 
 	bool CleanUp();
 
-	void integrator_velocity_verlet(Ball& ball, double dt);
+	//void Integrator_velocity_verlet(Ball& ball, double dt);
 
-	Ball* ball;
+	int CreateBall(double mass, double rad, double x, double y, double vx, double vy);
+
+	DynArray<Ball> balls;
+	int n_balls = 0;
 	Ground* ground;
 
 private:
 
 	bool debug;
+
 };
 
 #endif
