@@ -5,5 +5,5 @@ C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(34,1
 C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(35,14): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
 C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(36,14): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
 C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(50,23): warning C4018: '<': no coinciden signed/unsigned
-C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(149,23): warning C4018: '<': no coinciden signed/unsigned
+C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(155,23): warning C4018: '<': no coinciden signed/unsigned
   Game.vcxproj -> C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Build\Debug\Game.exe

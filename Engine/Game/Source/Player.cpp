@@ -80,7 +80,7 @@ bool Player::Update(float dt)
 			strength = 15;
 		}
 
-		app->physics->CreateBall(5, 5, x, y, objective_x * strength, -objective_y * strength);
+		app->physics->CreateBall(30, 10, x, y, objective_x * strength, -objective_y * strength);
 		strength = 0;
 	}
 

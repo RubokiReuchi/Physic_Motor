@@ -59,17 +59,17 @@ bool Physics::Update(float dt)
 		// Compute Gravity force
 		double fgx = balls.At(i)->mass * 0.0;
 		double fgy;
-		fgy = balls.At(i)->mass * 10; // Let's assume gravity is constant and downwards
+		fgy = balls.At(i)->mass * GRAVITY; // Let's assume gravity is constant and downwards
 	
 		//Buoyancy
-		double fbuoiancy = fgy * ground->density * 1.6f;//balls.At(i)->surface;
+		double fbuoiancy = GRAVITY * ground->density * balls.At(i)->volume;
 		double fbu = -fbuoiancy;
 
 		//Hidrodynamic Drag
-		double fhidrodragy = balls.At(i)->vy * 0.5;
+		double fhidrodragy = balls.At(i)->ay * 0.5;
 		double fhdy = -fhidrodragy;
 
-		double fhidrodragx = balls.At(i)->vx * 0.5;
+		double fhidrodragx = balls.At(i)->ax * 0.5;
 		double fhdx = -fhidrodragx;
 
 		//Aerodynamic Drag
@@ -89,10 +89,10 @@ bool Physics::Update(float dt)
 				balls.At(i)->fy += fgy;
 				balls.At(i)->fx += fgx;
 			}
-			if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x >=10)
+			if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x >10)
 			{
 				balls.At(i)->fy += fbu;   //buoyancy
-				balls.At(i)->fx += fhdx;  //hidrodynamic drag
+				balls.At(i)->fy += fhdy;  //hidrodynamic drag
 			}
 		}
 
@@ -113,7 +113,7 @@ bool Physics::Update(float dt)
 		balls.At(i)->vy += balls.At(i)->ay * new_dt;
 
 		// Step #4: solve collisions
-		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x <= 10)
+		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x < 10)
 		{
 			balls.At(i)->y = ground->y - balls.At(i)->rad;
 			balls.At(i)->vx = balls.At(i)->vx * 0.5;
@@ -126,6 +126,12 @@ bool Physics::Update(float dt)
 				balls.At(i)->gravity_enabled = false;
 			}
 			//ball->physics_enabled = false;
+		}
+
+		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x > 10)
+		{
+			balls.At(i)->vx = balls.At(i)->vx * 0.9;
+			balls.At(i)->vy = balls.At(i)->vy * 0.98;
 		}
 
 	}
@@ -184,7 +190,7 @@ int Physics::CreateBall(double mass, double rad, double x, double y, double vx, 
 	new_ball->mass = mass; // kg
 	new_ball->rad = PIXELS_TO_METERS(rad);
 	new_ball->surface = new_ball->rad * M_PI;
-	new_ball->volume = new_ball->rad * M_PI * 1.3333;
+	new_ball->volume = pow(new_ball->rad,3) * M_PI * 1.3333;
 
 	// Set initial position and velocity of the ball
 	new_ball->x = PIXELS_TO_METERS(x);
