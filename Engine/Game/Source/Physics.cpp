@@ -60,21 +60,41 @@ bool Physics::Update(float dt)
 		double fgx = balls.At(i)->mass * 0.0;
 		double fgy;
 		fgy = balls.At(i)->mass * 10; // Let's assume gravity is constant and downwards
+	
+		//Buoyancy
+		double fbuoiancy = fgy * ground->density * 1.6f;//balls.At(i)->surface;
+		double fbu = -fbuoiancy;
 
+		//Hidrodynamic Drag
+		double fhidrodragy = balls.At(i)->vy * 0.5;
+		double fhdy = -fhidrodragy;
 
-		// Add gravity force to the total accumulated force of the ball
+		double fhidrodragx = balls.At(i)->vx * 0.5;
+		double fhdx = -fhidrodragx;
+
+		//Aerodynamic Drag
+		double fdragx = 0.5 * balls.At(i)->vx * balls.At(i)->vx * balls.At(i)->surface * balls.At(i)->cd;
+		double fdx = -fdragx;
+
+		double fdragy = 0.5 * balls.At(i)->vy * balls.At(i)->vy * balls.At(i)->surface * balls.At(i)->cd;
+		double fdy = -fdragy;
+
+		// Add forces to the total accumulated force of the ball
 		if (balls.At(i)->physics_enabled)
 		{
-			balls.At(i)->fx += fgx;
+			balls.At(i)->fx += fdx;
+			balls.At(i)->fy += fdy;
 			if (balls.At(i)->gravity_enabled)
 			{
 				balls.At(i)->fy += fgy;
+				balls.At(i)->fx += fgx;
+			}
+			if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x >=10)
+			{
+				balls.At(i)->fy += fbu;   //buoyancy
+				balls.At(i)->fx += fhdx;  //hidrodynamic drag
 			}
 		}
-
-		double fdrag = 0.5 * balls.At(i)->vx * balls.At(i)->vx * balls.At(i)->surface * balls.At(i)->cd;
-		double fdx = -fdrag;
-		balls.At(i)->fx += fdx;
 
 		// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
 		balls.At(i)->ax = balls.At(i)->fx / balls.At(i)->mass;
@@ -85,15 +105,16 @@ bool Physics::Update(float dt)
 		// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
 		float new_dt = dt / 1000;
 
+		//balls.At(i)->vx += balls.At(i)->vx * dh;
+
 		balls.At(i)->x += balls.At(i)->vx * new_dt + 0.5 * balls.At(i)->ax * new_dt * new_dt;
 		balls.At(i)->y += balls.At(i)->vy * new_dt + 0.5 * balls.At(i)->ay * new_dt * new_dt;
 		balls.At(i)->vx += balls.At(i)->ax * new_dt;
 		balls.At(i)->vy += balls.At(i)->ay * new_dt;
 
 		// Step #4: solve collisions
-		if (balls.At(i)->y >= ground->y - balls.At(i)->rad)
+		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x <= 10)
 		{
-			// For now, just stop the ball when it reaches the ground.
 			balls.At(i)->y = ground->y - balls.At(i)->rad;
 			balls.At(i)->vx = balls.At(i)->vx * 0.5;
 			balls.At(i)->vy = -balls.At(i)->vy * 0.5;
@@ -158,10 +179,12 @@ bool Physics::CleanUp()
 int Physics::CreateBall(double mass, double rad, double x, double y, double vx, double vy)
 {
 	Ball* new_ball = new Ball();
+
 	// Set physics properties of the ball
 	new_ball->mass = mass; // kg
 	new_ball->rad = PIXELS_TO_METERS(rad);
 	new_ball->surface = new_ball->rad * M_PI;
+	new_ball->volume = new_ball->rad * M_PI * 1.3333;
 
 	// Set initial position and velocity of the ball
 	new_ball->x = PIXELS_TO_METERS(x);
@@ -176,6 +199,8 @@ int Physics::CreateBall(double mass, double rad, double x, double y, double vx, 
 	
 	return n_balls - 1;
 }
+
+
 
 void Ball::SetVelocity(double velX, double velY)
 {

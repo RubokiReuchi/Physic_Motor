@@ -43,8 +43,13 @@ public:
 	// Aerodynamics stuff
 	double surface; // Effective wet surface
 	double cl; // Lift coefficient
-	double cd; // Drag coefficient
+	double cd = 0.47f; // Drag coefficient
 	
+	//Hidrodinamic stuff
+	double density;
+	double volume; //volumen submergido
+
+
 	// Has physics enabled?
 	bool physics_enabled = true;
 	bool gravity_enabled = true;
@@ -61,6 +66,7 @@ public:
 	int y;
 	int w;
 	int h;
+	double density = 0.9f;
 };
 
 class Physics : public Module

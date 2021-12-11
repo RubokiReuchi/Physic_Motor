@@ -1,15 +1,9 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(499,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-  Player.cpp
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(117,59): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(117,36): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(117,29): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(117,25): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(121,60): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(121,36): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(121,29): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(121,25): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(125,70): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(125,36): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(125,29): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Game\Source\Player.cpp(125,25): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  Game.vcxproj -> C:\Users\rubenaa3\Documents\GitHub\Physic_Motor\Engine\Build\Debug\Game.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(477,5): warning MSB8004: El directorio Output no termina con una barra diagonal final. Esta instancia de compilación agregará la barra diagonal porque es necesaria para que se pueda evaluar correctamente el directorio Output.
+  Physics.cpp
+C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(33,14): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(34,14): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(35,14): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(36,14): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(50,23): warning C4018: '<': no coinciden signed/unsigned
+C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Game\Source\Physics.cpp(149,23): warning C4018: '<': no coinciden signed/unsigned
+  Game.vcxproj -> C:\Users\zapin\Documents\GitHub\Physic_Motor\Engine\Build\Debug\Game.exe
