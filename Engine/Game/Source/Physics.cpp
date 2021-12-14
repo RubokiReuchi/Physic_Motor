@@ -81,7 +81,6 @@ bool Physics::Update(float dt)
 		balls.At(i)->fx = balls.At(i)->fy = 0.0;
 		balls.At(i)->ax = balls.At(i)->ay = 0.0;
 
-
 		// Step #1: Compute forces
 
 		// Compute Gravity force
@@ -94,11 +93,20 @@ bool Physics::Update(float dt)
 		double fbu = -fbuoiancy;
 
 		//Hidrodynamic Drag
-		double fhidrodragy = balls.At(i)->ay * 0.5;
-		double fhdy = -fhidrodragy;
+		double H = 20; //variable a cambiar
+		double Vfh = sqrt(pow(balls.At(i)->vx, 2) + pow(balls.At(i)->vy, 2));
 
-		double fhidrodragx = balls.At(i)->ax * 0.5;
-		double fhdx = -fhidrodragx;
+		/*
+		double Dfhx = -(balls.At(i)->vx / Vfh);
+		double Dfhy = -(balls.At(i)->vy / Vfh);
+
+		double Fhdx = Dfhx * H;
+		double Fhdy = Dfhy * H;
+		*/
+
+		double Dfhx = -((balls.At(i)->vx + balls.At(i)->vy)/ sqrt(pow(balls.At(i)->vx, 2) + pow(balls.At(i)->vy, 2)));
+
+		double Fhd = Dfhx * H;
 
 		//Aerodynamic Drag
 		double fdragx = 0.5 * balls.At(i)->vx * balls.At(i)->vx * balls.At(i)->surface * balls.At(i)->cd;
@@ -114,16 +122,19 @@ bool Physics::Update(float dt)
 			balls.At(i)->fy += fdy;
 			if (balls.At(i)->gravity_enabled)
 			{
-				balls.At(i)->fy += fgy;
+				balls.At(i)->fy += fgy;   //Gravity
 				balls.At(i)->fx += fgx;
 			}
 			if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x >10)
 			{
-				balls.At(i)->fy += fbu;   //buoyancy
-				balls.At(i)->fy += fhdy;  //hidrodynamic drag
+				balls.At(i)->fy += fbu;   //Buoyancy
+
+				balls.At(i)->fy += Fhd;   //Hidrodynamic Drag	
+				balls.At(i)->fx += Fhd;
 			}
 		}
 
+		//Movimiento bola
 		balls.At(i)->fx += balls.At(i)->mfx;
 		balls.At(i)->fy += balls.At(i)->mfy;
 		balls.At(i)->mfx = 0;
@@ -135,7 +146,6 @@ bool Physics::Update(float dt)
 
 		// Step #3: Integrate --> from accel to new velocity & new position. 
 		// We will use the 2nd order "Velocity Verlet" method for integration.
-		// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
 		float new_dt = dt / 1000;
 
 		//balls.At(i)->vx += balls.At(i)->vx * dh;
@@ -155,12 +165,6 @@ bool Physics::Update(float dt)
 			break;
 		}
 
-
-		/*balls.At(i)->x += balls.At(i)->vx * new_dt + 0.5 * balls.At(i)->ax * new_dt * new_dt;
-		balls.At(i)->y += balls.At(i)->vy * new_dt + 0.5 * balls.At(i)->ay * new_dt * new_dt;
-		balls.At(i)->vx += balls.At(i)->ax * new_dt;
-		balls.At(i)->vy += balls.At(i)->ay * new_dt; */
-
 		// Step #4: solve collisions
 		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x < 10)
 		{
@@ -176,20 +180,12 @@ bool Physics::Update(float dt)
 			}
 			//ball->physics_enabled = false;
 		}
-
-		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x > 10)
-		{
-			balls.At(i)->vx = balls.At(i)->vx * 0.9;
-			balls.At(i)->vy = balls.At(i)->vy * 0.98;
-		}
-
 	}
 
 	return true;
 }
 
 
-// 
 bool Physics::PostUpdate()
 {
 	// TODO 5: On space bar press, create a circle on mouse position
@@ -241,16 +237,6 @@ void Physics::Integrator_backwards_euler(Ball* ball, double dt)
 }
 
 
-// Called before quitting
-bool Physics::CleanUp()
-{
-	LOG("Destroying physics world");
-
-	// Delete the whole physics world!
-
-	return true;
-}
-
 int Physics::CreateBall(double mass, double rad, double x, double y, double vx, double vy)
 {
 	Ball* new_ball = new Ball();
@@ -272,7 +258,6 @@ int Physics::CreateBall(double mass, double rad, double x, double y, double vx, 
 	balls.Insert(*new_ball, balls.Count());  
 	return balls.Count() - 1;
 }
-
 
 
 void Ball::SetVelocity(double velX, double velY)
@@ -298,4 +283,15 @@ dPoint Ball::GetVelocity()
 	dPoint velocity = { vx, vy };
 
 	return velocity;
+}
+
+
+// Called before quitting
+bool Physics::CleanUp()
+{
+	LOG("Destroying physics world");
+
+	// Delete the whole physics world!
+
+	return true;
 }
