@@ -55,8 +55,13 @@ public:
 	bool gravity_enabled = true;
 
 	void SetVelocity(double vx, double vy);
+	void AddForce(double fx, double fy);
+	void SetPosition(double x, double y);
 
 	dPoint GetVelocity();
+
+	double mfx;
+	double mfy;
 };
 
 class Ground
@@ -88,18 +93,24 @@ public:
 
 	bool CleanUp();
 
-	//void Integrator_velocity_verlet(Ball& ball, double dt);
+	void Integrator_velocity_verlet(Ball* ball, double dt);
+	void Integrator_forward_euler(Ball* ball, double dt);
+	void Integrator_backwards_euler(Ball* ball, double dt);
 
 	int CreateBall(double mass, double rad, double x, double y, double vx, double vy);
 
 	DynArray<Ball> balls;
-	int n_balls = 0;
 	Ground* ground;
+
+	int movement;
 
 private:
 
 	bool debug;
 
+	int integer;
+
+	
 };
 
 #endif

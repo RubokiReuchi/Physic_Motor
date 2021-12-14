@@ -23,8 +23,8 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	tex = new Textures();
 	audio = new Audio();
 	scene = new Scene();
-	physics = new Physics();
 	player = new Player();
+	physics = new Physics();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -33,8 +33,8 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(tex);
 	AddModule(audio);
 	AddModule(scene);
-	AddModule(physics);
 	AddModule(player);
+	AddModule(physics);
 
 	// Render last to swap buffer
 	AddModule(render);

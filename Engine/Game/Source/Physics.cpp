@@ -35,19 +35,47 @@ bool Physics::Start()
 	ground->w = PIXELS_TO_METERS(1200);
 	ground->h = PIXELS_TO_METERS(50);
 
+	integer = 1;
+	movement = 1;
+
 	return true;
 }
 
 // 
 bool Physics::PreUpdate()
 {
+	if (app->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		integer = 1;
+	}
+	else if (app->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	{
+		integer = 2;
+	}
+	else if (app->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	{
+		integer = 3;
+	}
+
+	if (app->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+	{
+		movement = 1;
+	}
+	else if (app->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+	{
+		movement = 2;
+	}
+	else if (app->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
+	{
+		movement = 3;
+	}
 
 	return true;
 }
 
 bool Physics::Update(float dt)
 {
-	for (size_t i = 0; i < n_balls; i++)
+	for (size_t i = 0; i < balls.Count(); i++)
 	{
 		// Step #0: Reset total acceleration and total accumulated force of the ball (clear old values)
 		balls.At(i)->fx = balls.At(i)->fy = 0.0;
@@ -96,6 +124,11 @@ bool Physics::Update(float dt)
 			}
 		}
 
+		balls.At(i)->fx += balls.At(i)->mfx;
+		balls.At(i)->fy += balls.At(i)->mfy;
+		balls.At(i)->mfx = 0;
+		balls.At(i)->mfy = 0;
+
 		// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
 		balls.At(i)->ax = balls.At(i)->fx / balls.At(i)->mass;
 		balls.At(i)->ay = balls.At(i)->fy / balls.At(i)->mass;
@@ -106,11 +139,27 @@ bool Physics::Update(float dt)
 		float new_dt = dt / 1000;
 
 		//balls.At(i)->vx += balls.At(i)->vx * dh;
+		
+		switch (integer)
+		{
+		case 1:
+			Integrator_velocity_verlet(balls.At(i), new_dt);
+			break;
+		case 2:
+			Integrator_forward_euler(balls.At(i), new_dt);
+			break;
+		case 3:
+			Integrator_backwards_euler(balls.At(i), new_dt);
+			break;
+		default:
+			break;
+		}
 
-		balls.At(i)->x += balls.At(i)->vx * new_dt + 0.5 * balls.At(i)->ax * new_dt * new_dt;
+
+		/*balls.At(i)->x += balls.At(i)->vx * new_dt + 0.5 * balls.At(i)->ax * new_dt * new_dt;
 		balls.At(i)->y += balls.At(i)->vy * new_dt + 0.5 * balls.At(i)->ay * new_dt * new_dt;
 		balls.At(i)->vx += balls.At(i)->ax * new_dt;
-		balls.At(i)->vy += balls.At(i)->ay * new_dt;
+		balls.At(i)->vy += balls.At(i)->ay * new_dt; */
 
 		// Step #4: solve collisions
 		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x < 10)
@@ -152,7 +201,7 @@ bool Physics::PostUpdate()
 	if (!debug)
 		return true;
 
-	for (size_t i = 1; i < n_balls; i++) // is player
+	for (size_t i = 1; i < balls.Count(); i++) // is player
 	{
 		app->render->DrawCircle(METERS_TO_PIXELS(balls.At(i)->x), METERS_TO_PIXELS(balls.At(i)->y), METERS_TO_PIXELS(balls.At(i)->rad), 255, 0, 0);
 	}
@@ -162,14 +211,34 @@ bool Physics::PostUpdate()
 	return true;
 }
 
-/*void Integrator_velocity_verlet(Ball* ball, double dt)
+void Physics::Integrator_velocity_verlet(Ball* ball, double dt)
 {
 	ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
 	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
+
 	ball->vx += ball->ax * dt;
 	ball->vy += ball->ay * dt;
-}*/
+}
 
+void Physics::Integrator_forward_euler(Ball* ball, double dt)
+{
+	ball->vx = ball->vx + ball->ax * dt;
+	ball->vy = ball->vy + ball->ay * dt;
+
+	ball->x = ball->x + ball->vx * dt;
+	ball->y = ball->y + ball->vy * dt;
+
+}
+
+void Physics::Integrator_backwards_euler(Ball* ball, double dt)
+{
+	ball->x = ball->x + ball->vx * dt;
+	ball->y = ball->y + ball->vy * dt;
+
+	ball->vx = ball->vx + ball->ax * dt;
+	ball->vy = ball->vy + ball->ay * dt;
+
+}
 
 
 // Called before quitting
@@ -200,10 +269,8 @@ int Physics::CreateBall(double mass, double rad, double x, double y, double vx, 
 
 	new_ball->cd = 0.4;
 
-	balls.Insert(*new_ball, n_balls);
-	n_balls++;
-	
-	return n_balls - 1;
+	balls.Insert(*new_ball, balls.Count());  
+	return balls.Count() - 1;
 }
 
 
@@ -212,6 +279,18 @@ void Ball::SetVelocity(double velX, double velY)
 {
 	vx = velX;
 	vy = velY;
+}
+
+void Ball::AddForce(double forX, double forY)
+{
+	mfx = forX;
+	mfy = forY;
+}
+
+void Ball::SetPosition(double X, double Y) 
+{
+	x += PIXELS_TO_METERS(X);
+	y += PIXELS_TO_METERS(Y);
 }
 
 dPoint Ball::GetVelocity()

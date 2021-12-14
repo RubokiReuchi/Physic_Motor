@@ -86,7 +86,19 @@ bool Player::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		app->physics->balls.At(body)->SetVelocity(-3, app->physics->balls.At(body)->GetVelocity().y);
+		
+		switch (app->physics->movement)
+		{
+		case 1:
+			app->physics->balls.At(body)->SetVelocity(-3, app->physics->balls.At(body)->GetVelocity().y);
+			break;
+		case 2:
+			app->physics->balls.At(body)->AddForce(-3000, 0);
+			break;
+		case 3:
+			app->physics->balls.At(body)->SetPosition(-3, 0);
+			break;
+		}
 	}
 	else if(app->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
 	{
@@ -95,7 +107,19 @@ bool Player::Update(float dt)
 
 	if (app->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		app->physics->balls.At(body)->SetVelocity(3, app->physics->balls.At(body)->GetVelocity().y);
+
+		switch (app->physics->movement)
+		{
+		case 1:
+			app->physics->balls.At(body)->SetVelocity(3, app->physics->balls.At(body)->GetVelocity().y);
+			break;
+		case 2:
+			app->physics->balls.At(body)->AddForce(3000, 0);
+			break;
+		case 3:
+			app->physics->balls.At(body)->SetPosition(3, 0);
+			break;
+		}
 	}
 	else if (app->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
 	{
