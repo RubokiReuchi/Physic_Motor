@@ -96,17 +96,18 @@ bool Physics::Update(float dt)
 		double H = 20; //variable a cambiar
 		double Vfh = sqrt(pow(balls.At(i)->vx, 2) + pow(balls.At(i)->vy, 2));
 
-		/*
+		
 		double Dfhx = -(balls.At(i)->vx / Vfh);
 		double Dfhy = -(balls.At(i)->vy / Vfh);
 
 		double Fhdx = Dfhx * H;
 		double Fhdy = Dfhy * H;
-		*/
-
+		
+		/*
 		double Dfhx = -((balls.At(i)->vx + balls.At(i)->vy)/ sqrt(pow(balls.At(i)->vx, 2) + pow(balls.At(i)->vy, 2)));
 
 		double Fhd = Dfhx * H;
+		*/
 
 		//Aerodynamic Drag
 		double fdragx = 0.5 * balls.At(i)->vx * balls.At(i)->vx * balls.At(i)->surface * balls.At(i)->cd;
@@ -129,8 +130,8 @@ bool Physics::Update(float dt)
 			{
 				balls.At(i)->fy += fbu;   //Buoyancy
 
-				balls.At(i)->fy += Fhd;   //Hidrodynamic Drag	
-				balls.At(i)->fx += Fhd;
+				balls.At(i)->fy += Fhdy;   //Hidrodynamic Drag	
+				balls.At(i)->fx += Fhdx;
 			}
 		}
 
