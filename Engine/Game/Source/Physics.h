@@ -13,6 +13,7 @@
 #define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
 #define PIXELS_TO_METERS(p) ((float) METERS_PER_PIXEL * p)
 #define GRAVITY 10.0f
+
 class Ball
 {
 public:
@@ -101,9 +102,13 @@ public:
 
 	DynArray<Ball> balls;
 	Ground* ground;
+	Ground* platform;
+	Ground* agua;
+	Ground* isla;
 
 	int movement;
-
+	int ww;
+	int wh;
 private:
 
 	bool debug;
