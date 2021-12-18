@@ -63,16 +63,19 @@ public:
 
 	double mfx;
 	double mfy;
+
+	Collider* ball_col = nullptr;
 };
 
 class Ground
 {
 public:
-	int x;
-	int y;
-	int w;
-	int h;
+	double x;
+	double y;
+	double w;
+	double h;
 	double density = 997;
+	Collider* ground_col = nullptr;
 };
 
 class Physics : public Module
@@ -100,15 +103,19 @@ public:
 
 	int CreateBall(double mass, double rad, double x, double y, double vx, double vy);
 
+	void OnCollision(Collider* c1, Collider* c2) override;
+
 	DynArray<Ball> balls;
+	//DynArray<Ground> ground;
 	Ground* ground;
 	Ground* platform;
 	Ground* agua;
 	Ground* isla;
 
 	int movement;
-	int ww;
-	int wh;
+
+	bool onCol = false;
+
 private:
 
 	bool debug;

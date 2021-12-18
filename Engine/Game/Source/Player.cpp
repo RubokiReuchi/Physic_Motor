@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Render.h"
 #include "Textures.h"
+#include "Collisions.h"
 
 #include <math.h>
 
@@ -26,6 +27,14 @@ bool Player::Awake()
 bool Player::Start()
 {
 	body = app->physics->CreateBall(30, 10, 50, 200, 0, 0);
+	x = (app->physics->balls.At(body)->x);
+	y = (app->physics->balls.At(body)->y);
+	double rad = (app->physics->balls.At(body)->rad);
+
+	app->col->RemoveCollider(app->physics->balls.At(body)->ball_col);
+	app->physics->balls.At(body)->ball_col = nullptr;
+	app->physics->balls.At(body)->ball_col = app->col->AddCollider({ x - rad, y - rad, rad * 2, rad * 2 }, Collider::Type::PLAYER, this);
+	return true;
 
 	return true;
 }
@@ -152,6 +161,10 @@ bool Player::PostUpdate()
 	return true;
 }
 
+void  Player::OnCollision(Collider* c1, Collider* c2) {
+
+
+}
 
 // Called before quitting
 bool Player::CleanUp()

@@ -5,6 +5,7 @@
 #include "Textures.h"
 #include "Window.h"
 #include "math.h"
+#include "Collisions.h"
 #include <cmath>
 
 // TODO 1: Include Box 2 header and library
@@ -29,12 +30,15 @@ bool Physics::Awake()
 
 bool Physics::Start()
 {
+
 	ground = new Ground();
 
 	ground->x = PIXELS_TO_METERS(0);
 	ground->y = PIXELS_TO_METERS(500);
 	ground->w = PIXELS_TO_METERS(500);
 	ground->h = PIXELS_TO_METERS(250);
+
+	ground->ground_col = app->col->AddCollider({ ground->x, ground->y, ground->w ,ground->h }, Collider::Type::GROUND, this);
 
 
 	platform = new Ground();
@@ -43,6 +47,9 @@ bool Physics::Start()
 	platform->y = PIXELS_TO_METERS(500);
 	platform->w = PIXELS_TO_METERS(100);
 	platform->h = PIXELS_TO_METERS(250);
+
+	platform->ground_col = app->col->AddCollider({ platform->x, platform->y, platform->w ,platform->h }, Collider::Type::GROUND, this);
+
 
 	agua = new Ground();
 
@@ -57,6 +64,8 @@ bool Physics::Start()
 	isla->y = PIXELS_TO_METERS(100);
 	isla->w = PIXELS_TO_METERS(200);
 	isla->h = PIXELS_TO_METERS(100);
+
+	isla->ground_col = app->col->AddCollider({ isla->x, isla->y, isla->w ,isla->h }, Collider::Type::GROUND, this);
 
 
 	integer = 1;
@@ -190,6 +199,10 @@ bool Physics::Update(float dt)
 			break;
 		}
 
+		if (balls.At(i)->ball_col != nullptr) {
+			balls.At(i)->ball_col->SetPos(balls.At(i)->x - balls.At(i)->rad, balls.At(i)->y - balls.At(i)->rad);
+		}
+		onCol = true;
 		// Step #4: solve collisions
 		/*if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x < agua->x || balls.At(i)->x > platform->x)
 		{
@@ -206,6 +219,7 @@ bool Physics::Update(float dt)
 			//ball->physics_enabled = false;
 		}*/
 
+		/*
 		//Left Wall
 		if (balls.At(i)->x <= 0)
 		{
@@ -348,9 +362,111 @@ bool Physics::Update(float dt)
 			}
 			//ball->physics_enabled = false;
 		}*/
+
 	}	
 
 	return true;
+}
+
+void Physics::OnCollision(Collider* c2, Collider* c1) {
+
+
+	if (onCol == true) {
+
+
+		if (c1->type == Collider::Type::PLAYER && c2->type == Collider::Type::GROUND) {
+
+			for (size_t i = 0; i < balls.Count(); i++)
+			{
+				if (c1 == balls.At(i)->ball_col) {
+					//Particle bounce coefficient / restoration factor[0 - 1]
+					float bc = 0.5f;
+
+					//Detect collisions
+					//Left wall
+					if (c1->rect.x < (c2->rect.x + c2->rect.w)) {
+						//	balls.At(i)->x = (c2->rect.x + c2->rect.w) + c1->rect.w;
+						//	balls.At(i)->vx = -bc * balls.At(i)->vx;
+					}
+
+					//Right wall
+					if (c1->rect.x + c1->rect.w > c2->rect.x) {
+						//balls.At(i)->x = c2->rect.x - c1->rect.w;
+						//balls.At(i)->vx = -bc * balls.At(i)->vx;
+					}
+
+					//Bottom wall
+					if (c1->rect.y + c1->rect.h > c2->rect.y) {
+						if (balls.At(i)->vy > -3.0f && balls.At(i)->vy < 3.0f) {
+							balls.At(i)->gravity_enabled = false;
+							//balls.At(i)->y = c2->rect.y - c1->rect.h * (1); 
+							balls.At(i)->vy = 0;
+						}
+						else {
+							balls.At(i)->y = c2->rect.y - c1->rect.h * (1);  ///No cambia de posicion al chocar, quiza porque la posición se cambia luego en el mismo frame
+							balls.At(i)->vy = -bc * balls.At(i)->vy;
+						}
+
+					}
+
+					//Top wall
+					if (c1->rect.y < c2->rect.y + c2->rect.h) {
+						//balls.At(i)->y = c2->rect.y + c2->rect.h;
+						//balls.At(i)->vy = -bc * balls.At(i)->vy;
+					}
+				}
+			}
+
+
+		}
+
+		if (c1->type == Collider::Type::BALL && c2->type == Collider::Type::GROUND) {
+
+			for (size_t i = 0; i < balls.Count(); i++)
+			{
+				if (c1 == balls.At(i)->ball_col) {
+					//Particle bounce coefficient / restoration factor[0 - 1]
+					float bc = 0.5f;
+
+					//Detect collisions
+					//Left wall
+					if (c1->rect.x < (c2->rect.x + c2->rect.w)) {
+						//	balls.At(i)->x = (c2->rect.x + c2->rect.w) + c1->rect.w;
+						//	balls.At(i)->vx = -bc * balls.At(i)->vx;
+					}
+
+					//Right wall
+					if (c1->rect.x + c1->rect.w > c2->rect.x) {
+						//balls.At(i)->x = c2->rect.x - c1->rect.w;
+						//balls.At(i)->vx = -bc * balls.At(i)->vx;
+					}
+
+					//Bottom wall
+					if (c1->rect.y + c1->rect.h > c2->rect.y) {
+						if (balls.At(i)->vy > -3.0f && balls.At(i)->vy < 3.0f) {
+							balls.At(i)->gravity_enabled = false;
+							//balls.At(i)->y = c2->rect.y - c1->rect.h * (1);
+							balls.At(i)->vy = 0;
+						}
+						else {
+							balls.At(i)->y = c2->rect.y - c1->rect.h * (1);  ///No cambia de posicion al chocar, quiza porque la posición se cambia luego en el mismo frame
+							balls.At(i)->vy = -bc * balls.At(i)->vy;
+						}
+
+					}
+
+					//Top wall
+					if (c1->rect.y < c2->rect.y + c2->rect.h) {
+						//balls.At(i)->y = c2->rect.y + c2->rect.h;
+						//balls.At(i)->vy = -bc * balls.At(i)->vy;
+					}
+				}
+			}
+
+
+		}
+		//onCol = false;
+	}
 }
 
 
@@ -430,6 +546,9 @@ int Physics::CreateBall(double mass, double rad, double x, double y, double vx, 
 	new_ball->y = PIXELS_TO_METERS(y);
 	new_ball->vx = vx;
 	new_ball->vy = vy;
+
+	//Add collider
+	new_ball->ball_col = app->col->AddCollider({ new_ball->x - new_ball->rad, new_ball->y - new_ball->rad, new_ball->rad * 2 , new_ball->rad * 2 }, Collider::Type::BALL, this);
 
 	new_ball->cd = 0.4;
 

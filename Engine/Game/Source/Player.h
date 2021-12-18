@@ -6,6 +6,7 @@
 #include "Log.h"
 
 class Ball;
+struct Collider;
 
 class Player : public Module
 {
@@ -25,6 +26,8 @@ public:
 	bool PostUpdate();
 
 	bool CleanUp();
+
+	void OnCollision(Collider* c1, Collider* c2) override;
 
 private:
 	int x, y, r = 5;
