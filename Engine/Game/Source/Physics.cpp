@@ -380,39 +380,81 @@ void Physics::OnCollision(Collider* c2, Collider* c1) {
 			{
 				if (c1 == balls.At(i)->ball_col) {
 					//Particle bounce coefficient / restoration factor[0 - 1]
-					float bc = 0.5f;
+					float bcy = 0.5f;
+					float bcx = 0.5f;
+					//Space at the edges in which the collision has no effect
+					float border = 1.0f;
 
 					//Detect collisions
 					//Left wall
-					if (c1->rect.x < (c2->rect.x + c2->rect.w)) {
-						//	balls.At(i)->x = (c2->rect.x + c2->rect.w) + c1->rect.w;
-						//	balls.At(i)->vx = -bc * balls.At(i)->vx;
+					//if(wall is at the left of the ball)&&(ball is between the edges of the wall collider)
+					if (c1->rect.x < c2->rect.x + c2->rect.w && c1->rect.x + c1->rect.w > c2->rect.x + c2->rect.w && c1->rect.y > c2->rect.y && c1->rect.y + c1->rect.h < c2->rect.y + c2->rect.h) {
+						if (balls.At(i)->vx > -0.1f && balls.At(i)->vx < 0.1f) {
+
+							balls.At(i)->x = c2->rect.x + c2->rect.w + balls.At(i)->rad;
+							balls.At(i)->vx = 0;
+							//balls.At(i)->gravity_enabled = false;
+						}
+						else {
+
+
+							balls.At(i)->x = (c2->rect.x + c2->rect.w) + balls.At(i)->rad;
+							balls.At(i)->vx = -bcx * balls.At(i)->vx;
+							balls.At(i)->vy = bcy * balls.At(i)->vy;
+						}
 					}
 
 					//Right wall
-					if (c1->rect.x + c1->rect.w > c2->rect.x) {
-						//balls.At(i)->x = c2->rect.x - c1->rect.w;
-						//balls.At(i)->vx = -bc * balls.At(i)->vx;
+					//if (wall is at the right of the ball) && (ball is between the edges of the wall collider)
+					if (c1->rect.x + c1->rect.w > c2->rect.x && c1->rect.x < c2->rect.x && c1->rect.y > c2->rect.y && c1->rect.y + c1->rect.h < c2->rect.y + c2->rect.h) {
+						if (balls.At(i)->vx > -0.1f && balls.At(i)->vx < 0.1f) {
+
+							balls.At(i)->x = c2->rect.x - balls.At(i)->rad;
+							balls.At(i)->vx = 0;
+							//balls.At(i)->gravity_enabled = false;
+						}
+						else {
+							balls.At(i)->x = c2->rect.x - balls.At(i)->rad;
+							balls.At(i)->vx = -bcx * balls.At(i)->vx;
+							balls.At(i)->vy = bcy * balls.At(i)->vy;
+						}
+
 					}
 
 					//Bottom wall
-					if (c1->rect.y + c1->rect.h > c2->rect.y) {
-						if (balls.At(i)->vy > -3.0f && balls.At(i)->vy < 3.0f) {
-							balls.At(i)->gravity_enabled = false;
-							//balls.At(i)->y = c2->rect.y - c1->rect.h * (1); 
+					// if (ball is over the wall) &&  (ball is between the edges of the wall collider)
+					if (c1->rect.y + c1->rect.h > c2->rect.y && c1->rect.y < c2->rect.y && c1->rect.x > c2->rect.x - c1->rect.w && c1->rect.x + c1->rect.w < c2->rect.x + c2->rect.w) {
+						if (balls.At(i)->vy > -0.1f && balls.At(i)->vy < 0.1f) {
+
+							balls.At(i)->y = c2->rect.y - balls.At(i)->rad;
 							balls.At(i)->vy = 0;
+							//	balls.At(i)->gravity_enabled = false;
 						}
 						else {
-							balls.At(i)->y = c2->rect.y - c1->rect.h * (1);  ///No cambia de posicion al chocar, quiza porque la posición se cambia luego en el mismo frame
-							balls.At(i)->vy = -bc * balls.At(i)->vy;
+							balls.At(i)->y = c2->rect.y - balls.At(i)->rad;
+							balls.At(i)->vy = -bcy * balls.At(i)->vy;
+							balls.At(i)->vx = bcx * balls.At(i)->vx;
+
 						}
 
 					}
 
 					//Top wall
-					if (c1->rect.y < c2->rect.y + c2->rect.h) {
-						//balls.At(i)->y = c2->rect.y + c2->rect.h;
-						//balls.At(i)->vy = -bc * balls.At(i)->vy;
+					// if (ball is under the wall) &&  (ball is between the edges of the wall collider)
+					if (c1->rect.y < c2->rect.y + c2->rect.h && c1->rect.y + c1->rect.h >c2->rect.y+c2->rect.h && c1->rect.x > c2->rect.x - c1->rect.w && c1->rect.x + c1->rect.w < c2->rect.x + c2->rect.w) {
+						
+						if (balls.At(i)->vy > -0.1f && balls.At(i)->vy < 0.1f) {
+
+							balls.At(i)->y = c2->rect.y + c2->rect.h + balls.At(i)->rad;
+							balls.At(i)->vy = 0;
+							//	balls.At(i)->gravity_enabled = false;
+						}
+						else {
+							balls.At(i)->y = c2->rect.y + c2->rect.h + balls.At(i)->rad;
+							balls.At(i)->vy = -bcy * balls.At(i)->vy;
+							balls.At(i)->vx = bcx * balls.At(i)->vx;
+						}
+						
 					}
 				}
 			}
@@ -426,44 +468,84 @@ void Physics::OnCollision(Collider* c2, Collider* c1) {
 			{
 				if (c1 == balls.At(i)->ball_col) {
 					//Particle bounce coefficient / restoration factor[0 - 1]
-					float bc = 0.5f;
+					float bcy = 0.5f;
+					float bcx = 0.5f;
+					//Space at the edges in which the collision has no effect
+					float border = 1.0f;
 
 					//Detect collisions
 					//Left wall
-					if (c1->rect.x < (c2->rect.x + c2->rect.w)) {
-						//	balls.At(i)->x = (c2->rect.x + c2->rect.w) + c1->rect.w;
-						//	balls.At(i)->vx = -bc * balls.At(i)->vx;
+					//if(wall is at the left of the ball)&&(ball is between the edges of the wall collider)
+					if (c1->rect.x < c2->rect.x + c2->rect.w && c1->rect.x + c1->rect.w > c2->rect.x + c2->rect.w && c1->rect.y > c2->rect.y && c1->rect.y + c1->rect.h < c2->rect.y + c2->rect.h) {
+						if (balls.At(i)->vx > -0.1f && balls.At(i)->vx < 0.1f) {
+
+							balls.At(i)->x = c2->rect.x + c2->rect.w + balls.At(i)->rad;
+							balls.At(i)->vx = 0;
+							//balls.At(i)->gravity_enabled = false;
+						}
+						else {
+
+
+							balls.At(i)->x = (c2->rect.x + c2->rect.w) + balls.At(i)->rad;
+							balls.At(i)->vx = -bcx * balls.At(i)->vx;
+							balls.At(i)->vy = bcy * balls.At(i)->vy;
+						}
 					}
 
 					//Right wall
-					if (c1->rect.x + c1->rect.w > c2->rect.x) {
-						//balls.At(i)->x = c2->rect.x - c1->rect.w;
-						//balls.At(i)->vx = -bc * balls.At(i)->vx;
+					//if (wall is at the right of the ball) && (ball is between the edges of the wall collider)
+					if (c1->rect.x + c1->rect.w > c2->rect.x && c1->rect.x < c2->rect.x && c1->rect.y > c2->rect.y && c1->rect.y + c1->rect.h < c2->rect.y + c2->rect.h) {
+						if (balls.At(i)->vx > -0.1f && balls.At(i)->vx < 0.1f) {
+
+							balls.At(i)->x = c2->rect.x - balls.At(i)->rad;
+							balls.At(i)->vx = 0;
+							//balls.At(i)->gravity_enabled = false;
+						}
+						else {
+							balls.At(i)->x = c2->rect.x - balls.At(i)->rad;
+							balls.At(i)->vx = -bcx * balls.At(i)->vx;
+							balls.At(i)->vy = bcy * balls.At(i)->vy;
+						}
+
 					}
 
 					//Bottom wall
-					if (c1->rect.y + c1->rect.h > c2->rect.y) {
-						if (balls.At(i)->vy > -3.0f && balls.At(i)->vy < 3.0f) {
-							balls.At(i)->gravity_enabled = false;
-							//balls.At(i)->y = c2->rect.y - c1->rect.h * (1);
+					// if (ball is over the wall) &&  (ball is between the edges of the wall collider)
+					if (c1->rect.y + c1->rect.h > c2->rect.y && c1->rect.y < c2->rect.y && c1->rect.x > c2->rect.x - c1->rect.w && c1->rect.x + c1->rect.w < c2->rect.x + c2->rect.w) {
+						if (balls.At(i)->vy > -0.1f && balls.At(i)->vy < 0.1f) {
+
+							balls.At(i)->y = c2->rect.y - balls.At(i)->rad;
 							balls.At(i)->vy = 0;
+							//	balls.At(i)->gravity_enabled = false;
 						}
 						else {
-							balls.At(i)->y = c2->rect.y - c1->rect.h * (1);  ///No cambia de posicion al chocar, quiza porque la posición se cambia luego en el mismo frame
-							balls.At(i)->vy = -bc * balls.At(i)->vy;
+							balls.At(i)->y = c2->rect.y - balls.At(i)->rad;
+							balls.At(i)->vy = -bcy * balls.At(i)->vy;
+							balls.At(i)->vx = bcx * balls.At(i)->vx;
+
 						}
 
 					}
 
 					//Top wall
-					if (c1->rect.y < c2->rect.y + c2->rect.h) {
-						//balls.At(i)->y = c2->rect.y + c2->rect.h;
-						//balls.At(i)->vy = -bc * balls.At(i)->vy;
+					// if (ball is under the wall) &&  (ball is between the edges of the wall collider)
+					if (c1->rect.y < c2->rect.y + c2->rect.h && c1->rect.y + c1->rect.h >c2->rect.y + c2->rect.h && c1->rect.x > c2->rect.x - c1->rect.w && c1->rect.x + c1->rect.w < c2->rect.x + c2->rect.w) {
+
+						if (balls.At(i)->vy > -0.1f && balls.At(i)->vy < 0.1f) {
+
+							balls.At(i)->y = c2->rect.y + c2->rect.h + balls.At(i)->rad;
+							balls.At(i)->vy = 0;
+							//	balls.At(i)->gravity_enabled = false;
+						}
+						else {
+							balls.At(i)->y = c2->rect.y + c2->rect.h + balls.At(i)->rad;
+							balls.At(i)->vy = -bcy * balls.At(i)->vy;
+							balls.At(i)->vx = bcx * balls.At(i)->vx;
+						}
+
 					}
 				}
 			}
-
-
 		}
 		//onCol = false;
 	}
