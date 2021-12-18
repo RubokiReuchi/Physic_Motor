@@ -116,7 +116,7 @@ void Collisions::DebugDraw()
 			app->render->DrawRectangle({ METERS_TO_PIXELS(colliders[i]->rect.x), METERS_TO_PIXELS(colliders[i]->rect.y), METERS_TO_PIXELS(colliders[i]->rect.w), METERS_TO_PIXELS(colliders[i]->rect.w) }, 0, 0, 255, alpha);
 			break;
 		case Collider::Type::GROUND: // red
-			app->render->DrawRectangle({ METERS_TO_PIXELS(colliders[i]->rect.x), METERS_TO_PIXELS(colliders[i]->rect.y), METERS_TO_PIXELS(colliders[i]->rect.w), METERS_TO_PIXELS(colliders[i]->rect.h) }, 255, 0, 0, alpha);
+			app->render->DrawRectangle({ METERS_TO_PIXELS(colliders[i]->rect.x), METERS_TO_PIXELS(colliders[i]->rect.y), METERS_TO_PIXELS(colliders[i]->rect.w), METERS_TO_PIXELS(colliders[i]->rect.h) }, 0, 255, 0, alpha);
 			break;
 		}
 	}

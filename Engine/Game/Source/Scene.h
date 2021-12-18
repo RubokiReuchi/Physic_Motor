@@ -32,6 +32,8 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	int textFont = -1;
+
 private:
 	SDL_Texture* img;
 };

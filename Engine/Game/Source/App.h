@@ -18,6 +18,7 @@ class Scene;
 class Physics;
 class Player;
 class Collisions;
+class Fonts;
 
 class App
 {
@@ -78,6 +79,7 @@ public:
 	Physics* physics;
 	Player* player;
 	Collisions* col;
+	Fonts* fonts;
 
 private:
 

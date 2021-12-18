@@ -8,6 +8,7 @@
 #include "Physics.h"
 #include "Player.h"
 #include "Collisions.h"
+#include "Fonts.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -27,6 +28,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	player = new Player();
 	physics = new Physics();
 	col = new Collisions();
+	fonts = new Fonts();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -38,6 +40,7 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 	AddModule(col);
 	AddModule(physics);
+	AddModule(fonts);
 
 	// Render last to swap buffer
 	AddModule(render);
