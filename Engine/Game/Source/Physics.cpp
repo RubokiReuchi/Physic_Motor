@@ -6,6 +6,7 @@
 #include "Window.h"
 #include "math.h"
 #include "Collisions.h"
+#include "Fonts.h"
 #include <cmath>
 
 // TODO 1: Include Box 2 header and library
@@ -30,9 +31,12 @@ bool Physics::Awake()
 
 bool Physics::Start()
 {
+	char lookupTableChars[] = { " !'#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[/]^_ abcdefghijklmnopqrstuvwxyz{|}~ çüéâäàaçêëèïîìäaéÆæôöòûù" };
+	textFont = app->fonts->Load("Assets/pixel_font.png", lookupTableChars, 8);
+
+	winc = true;
 
 	ground = new Ground();
-
 	ground->x = PIXELS_TO_METERS(0);
 	ground->y = PIXELS_TO_METERS(500);
 	ground->w = PIXELS_TO_METERS(500);
@@ -58,6 +62,7 @@ bool Physics::Start()
 	agua->w = PIXELS_TO_METERS(700);
 	agua->h = PIXELS_TO_METERS(250);
 
+	
 	isla = new Ground();
 
 	isla->x = PIXELS_TO_METERS(600);
@@ -66,6 +71,14 @@ bool Physics::Start()
 	isla->h = PIXELS_TO_METERS(100);
 
 	isla->ground_col = app->col->AddCollider({ isla->x, isla->y, isla->w ,isla->h }, Collider::Type::GROUND, this);
+
+
+	win = new Ground();
+
+	win->x = PIXELS_TO_METERS(1200);
+	win->y = PIXELS_TO_METERS(400);
+	win->w = PIXELS_TO_METERS(50);
+	win->h = PIXELS_TO_METERS(50);
 
 
 	integer = 1;
@@ -126,7 +139,7 @@ bool Physics::Update(float dt)
 		double fbu = -fbuoiancy;
 
 		//Hidrodynamic Drag
-		double H = 20; //variable a cambiar
+		double H = 10; //variable a cambiar
 		double Vfh = sqrt(pow(balls.At(i)->vx, 2) + pow(balls.At(i)->vy, 2));
 
 		
@@ -135,36 +148,34 @@ bool Physics::Update(float dt)
 
 		double Fhdx = Dfhx * H;
 		double Fhdy = Dfhy * H;
-		
-		/*
-		double Dfhx = -((balls.At(i)->vx + balls.At(i)->vy)/ sqrt(pow(balls.At(i)->vx, 2) + pow(balls.At(i)->vy, 2)));
-
-		double Fhd = Dfhx * H;
-		*/
 
 		//Aerodynamic Drag
-		double fdragx = 0.5 * balls.At(i)->vx * balls.At(i)->vx * balls.At(i)->surface * balls.At(i)->cd;
-		double fdx = -fdragx;
-
-		double fdragy = 0.5 * balls.At(i)->vy * balls.At(i)->vy * balls.At(i)->surface * balls.At(i)->cd;
-		double fdy = -fdragy;
+		double Fdx = balls.At(i)->vx * balls.At(i)->vx * balls.At(i)->surface * balls.At(i)->cd;
+		
+		double Fdy = balls.At(i)->vy * balls.At(i)->vy * balls.At(i)->surface * balls.At(i)->cd;
 
 		// Add forces to the total accumulated force of the ball
 		if (balls.At(i)->physics_enabled)
 		{
-			balls.At(i)->fx += fdx;
-			balls.At(i)->fy += fdy;
+			balls.At(i)->fx += Fdx;
+			balls.At(i)->fy += Fdy;
 			if (balls.At(i)->gravity_enabled)
 			{
+				app->fonts->BlitText(0, 0, textFont, "||Gravity: Enabled||");
 				balls.At(i)->fy += fgy;   //Gravity
 				balls.At(i)->fx += fgx;
 			}
 			if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x >agua->x && balls.At(i)->x < platform->x)
 			{
-				balls.At(i)->fy += fbu;   //Buoyancy
-
-				balls.At(i)->fy += Fhdy;   //Hidrodynamic Drag	
-				balls.At(i)->fx += Fhdx;
+				if(balls.At(i)->buoyancy_enabled)   //Buoyancy
+				{
+					balls.At(i)->fy += fbu;
+				}
+				if (balls.At(i)->HidroDrag_enabled)
+				{
+					balls.At(i)->fy += Fhdy;   //Hidrodynamic Drag	
+					balls.At(i)->fx += Fhdx;
+				}
 			}
 		}
 
@@ -188,12 +199,15 @@ bool Physics::Update(float dt)
 		{
 		case 1:
 			Integrator_velocity_verlet(balls.At(i), new_dt);
+			app->fonts->BlitText(0, 0, textFont, "|Integrator: Verlet|");
 			break;
 		case 2:
 			Integrator_forward_euler(balls.At(i), new_dt);
+			app->fonts->BlitText(0, 0, textFont, "|Integrator: Forward Euler|");
 			break;
 		case 3:
 			Integrator_backwards_euler(balls.At(i), new_dt);
+			app->fonts->BlitText(0, 0, textFont, "|Integrator: Backwards Euler|");
 			break;
 		default:
 			break;
@@ -203,29 +217,23 @@ bool Physics::Update(float dt)
 			balls.At(i)->ball_col->SetPos(balls.At(i)->x - balls.At(i)->rad, balls.At(i)->y - balls.At(i)->rad);
 		}
 		onCol = true;
+		
+		
 		// Step #4: solve collisions
-		/*if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x < agua->x || balls.At(i)->x > platform->x)
-		{
-			balls.At(i)->y = ground->y - balls.At(i)->rad;
-			balls.At(i)->vx = balls.At(i)->vx * 0.5;
-			balls.At(i)->vy = -balls.At(i)->vy * 0.5;
-			balls.At(i)->ax = balls.At(i)->ay = 0.0;
-			balls.At(i)->fx = balls.At(i)->fy = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}*/
 
-		/*
+		//Win Condition
+		if (balls.At(i)->x >= win->x && balls.At(i)->x <= win->x + win->w && balls.At(i)->y >= win->y && balls.At(i)->y <= win->y + win->h)
+		{
+			
+			winc = false;
+		}
+
+		
 		//Left Wall
 		if (balls.At(i)->x <= 0)
 		{
 			balls.At(i)->x = 0 + balls.At(i)->rad;
 			balls.At(i)->vx = -balls.At(i)->vx * 0.5;
-			balls.At(i)->fx = 0.0;
 			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
 			{
 				balls.At(i)->vy = 0.0;
@@ -239,7 +247,6 @@ bool Physics::Update(float dt)
 		{
 			balls.At(i)->x = PIXELS_TO_METERS(1280) - balls.At(i)->rad;
 			balls.At(i)->vx = -balls.At(i)->vx * 0.5;
-			balls.At(i)->fx = 0.0;
 			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
 			{
 				balls.At(i)->vy = 0.0;
@@ -248,14 +255,11 @@ bool Physics::Update(float dt)
 			//ball->physics_enabled = false;
 		}
 
-
-		//Ground
-		if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->y <= ground->y + 0.1f && balls.At(i)->x < agua->x || balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->y <= ground->y + 0.1f && balls.At(i)->x > platform->x)
+		//Top Wall
+		if (balls.At(i)->y <= 0)
 		{
-			balls.At(i)->y = ground->y - balls.At(i)->rad;
-			balls.At(i)->vx = balls.At(i)->vx * 0.5;
+			balls.At(i)->y = 0 + balls.At(i)->rad;
 			balls.At(i)->vy = -balls.At(i)->vy * 0.5;
-			balls.At(i)->fx = balls.At(i)->fy = 0.0;
 			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
 			{
 				balls.At(i)->vy = 0.0;
@@ -263,105 +267,6 @@ bool Physics::Update(float dt)
 			}
 			//ball->physics_enabled = false;
 		}
-		
-		//Ground Left
-		if (balls.At(i)->x <= agua->x && balls.At(i)->x >= agua->x -0.1f&& balls.At(i)->y > agua->y)
-		{
-			balls.At(i)->x = agua->x + balls.At(i)->rad;
-			balls.At(i)->vx = -balls.At(i)->vx;
-			balls.At(i)->fx = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}
-
-		//Ground Right
-		if (balls.At(i)->x >= platform->x && balls.At(i)->x >= platform->x + 0.1f && balls.At(i)->y > agua->y)
-		{
-			balls.At(i)->x = platform->x - balls.At(i)->rad;
-			balls.At(i)->vx = -balls.At(i)->vx;
-			balls.At(i)->fx = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}
-
-		//Isla Ground
-		if (balls.At(i)->x >= isla->x && balls.At(i)->x <= (isla->x + isla->w) && balls.At(i)->y >= isla->y && balls.At(i)->y - balls.At(i)->rad <= isla->y)
-		{
-			balls.At(i)->y = isla->y - balls.At(i)->rad;
-			balls.At(i)->vx = balls.At(i)->vx;
-			balls.At(i)->vy = -balls.At(i)->vy;
-			balls.At(i)->fx = balls.At(i)->fy = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}
-
-		//Isla Bottom
-		if (balls.At(i)->x >= isla->x && balls.At(i)->x <= (isla->x + isla->w) && balls.At(i)->y <= isla->y +isla->h && balls.At(i)->y >= isla->y + isla->h - 0.1f)
-		{
-			balls.At(i)->y = isla->y + isla->h + balls.At(i)->rad;
-			balls.At(i)->vy = -balls.At(i)->vy;
-			balls.At(i)->fx = balls.At(i)->fy = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}
-
-		//Isla Left
-		if (balls.At(i)->x >= isla->x && balls.At(i)->x <= isla->x +0.1f && balls.At(i)->y >= isla->y && balls.At(i)->y <= isla->y + isla->h)
-		{
-			balls.At(i)->x = isla->x - balls.At(i)->rad;
-			balls.At(i)->vx = -balls.At(i)->vx;
-			balls.At(i)->fx = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}
-		
-		//Isla Right
-		if (balls.At(i)->x <= isla->x + isla->w && balls.At(i)->x >= isla->x + isla->w - 0.1f && balls.At(i)->y >= isla->y && balls.At(i)->y <= isla->y + isla->h)
-		{
-			balls.At(i)->x = isla->x + isla->w + balls.At(i)->rad;
-			balls.At(i)->vx = -balls.At(i)->vx;
-			balls.At(i)->fx = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}
-
-		//Ground Right Wall
-		/*if (balls.At(i)->x <= 500 && balls.At(i)->y >= 500)
-		{
-			balls.At(i)->x = 500 - balls.At(i)->rad;
-			balls.At(i)->vx = -balls.At(i)->vx;
-			balls.At(i)->fx = 0.0;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
-		}*/
 
 	}	
 
@@ -579,6 +484,9 @@ bool Physics::PostUpdate()
 
 	//Isla
 	app->render->DrawRectangle({ METERS_TO_PIXELS(isla->x), METERS_TO_PIXELS(isla->y), METERS_TO_PIXELS(isla->w), METERS_TO_PIXELS(isla->h) }, 0, 143, 57, 255, false);
+
+	//Win
+	app->render->DrawRectangle({ METERS_TO_PIXELS(win->x), METERS_TO_PIXELS(win->y), METERS_TO_PIXELS(win->w), METERS_TO_PIXELS(win->h) }, 0, 255, 0, 255, false);
 
 	return true;
 }

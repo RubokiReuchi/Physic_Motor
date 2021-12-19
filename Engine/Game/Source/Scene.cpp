@@ -63,12 +63,13 @@ bool Scene::Update(float dt)
 		app->render->camera.x += 1;
 	*/
 
+	if (app->col->debug == false) {
+		app->fonts->BlitText(0, 0, textFont, "F2 TO SHOW COLIDERS");
+	}
 	if (app->col->debug == true) {
-		app->fonts->BlitText(0, 0, textFont, "-SAMPLE TEXT-|AAAAAAAAAAAAAAAAAAAA|-SAMPLE TEXT-|AAAAAAAAAAAAAAAAAAAA|-SAMPLE TEXT-|AAAAAAAAAAAAAAAAAAAA|");
+		app->fonts->BlitText(0, 0, textFont, "F2 TO HIDE COLIDERS");
 	}
 	
-
-
 	return true;
 }
 

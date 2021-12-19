@@ -54,6 +54,8 @@ public:
 	// Has physics enabled?
 	bool physics_enabled = true;
 	bool gravity_enabled = true;
+	bool buoyancy_enabled = true;
+	bool HidroDrag_enabled = true;
 
 	void SetVelocity(double vx, double vy);
 	void AddForce(double fx, double fy);
@@ -65,6 +67,7 @@ public:
 	double mfy;
 
 	Collider* ball_col = nullptr;
+
 };
 
 class Ground
@@ -106,15 +109,19 @@ public:
 	void OnCollision(Collider* c1, Collider* c2) override;
 
 	DynArray<Ball> balls;
-	//DynArray<Ground> ground;
 	Ground* ground;
 	Ground* platform;
 	Ground* agua;
 	Ground* isla;
+	Ground* win;
 
 	int movement;
 
 	bool onCol = false;
+
+	int textFont = -1;
+
+	bool winc = false;
 
 private:
 
