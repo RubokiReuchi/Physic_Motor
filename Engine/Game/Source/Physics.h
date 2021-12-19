@@ -77,7 +77,7 @@ public:
 	double y;
 	double w;
 	double h;
-	double density = 997;
+	double density = 500;
 	Collider* ground_col = nullptr;
 };
 

@@ -145,7 +145,7 @@ bool Player::Update(float dt)
 			app->physics->balls.At(body)->SetVelocity(0, app->physics->balls.At(body)->GetVelocity().y);
 		}
 
-		if (losec == 0)
+		if (losec == 0 || app->physics->balls.At(body)->y >= PIXELS_TO_METERS(720))
 		{
 			app->physics->winc = false;
 		}
@@ -155,20 +155,19 @@ bool Player::Update(float dt)
 	}
 	else
 	{
-		if (losec != 0)
+		if (losec == 0 || app->physics->balls.At(body)->y >= PIXELS_TO_METERS(720))
 		{
-			app->fonts->BlitText(1280/2 - 50, 720/2 - 50, textFont, "YOU WIN|PRESS F5 TO CONTINUE|");
-			
+			app->fonts->BlitText(1280 / 2 - 50, 720 / 2 - 50, textFont, "YOU LOSE|PRESS F5 TO CONTINUE|");		
 		}
-		else
-		{
-			app->fonts->BlitText(1280 / 2 - 50, 720 / 2 - 50, textFont, "YOU LOSE|PRESS F5 TO CONTINUE|");
-			losec = 10;
-		}
+		else 
+			app->fonts->BlitText(1280 / 2 - 50, 720 / 2 - 50, textFont, "YOU WIN|PRESS F5 TO CONTINUE|");
 
 		if (app->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 		{
 			app->physics->winc = true;
+			app->physics->balls.At(body)->x = PIXELS_TO_METERS(50);
+			app->physics->balls.At(body)->y = PIXELS_TO_METERS(200);
+			losec = 10;
 		}
 	}
 	

@@ -268,6 +268,18 @@ bool Physics::Update(float dt)
 			//ball->physics_enabled = false;
 		}
 
+		if (balls.At(i)->y >= PIXELS_TO_METERS(720))
+		{
+			//balls.At(i)->y = PIXELS_TO_METERS(720) - balls.At(i)->rad;
+			balls.At(i)->vy = balls.At(i)->vy* 0.7;
+			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
+			{
+				balls.At(i)->vy = 0.0;
+				balls.At(i)->gravity_enabled = false;
+			}
+			//ball->physics_enabled = false;
+		}
+
 	}	
 
 	return true;
@@ -542,7 +554,8 @@ int Physics::CreateBall(double mass, double rad, double x, double y, double vx, 
 
 	new_ball->cd = 0.4;
 
-	balls.Insert(*new_ball, balls.Count());  
+	balls.Insert(*new_ball, balls.Count()); 
+
 	return balls.Count() - 1;
 }
 
