@@ -53,9 +53,7 @@ public:
 
 	// Has physics enabled?
 	bool physics_enabled = true;
-	bool gravity_enabled = true;
-	bool buoyancy_enabled = true;
-	bool HidroDrag_enabled = true;
+	
 
 	void SetVelocity(double vx, double vy);
 	void AddForce(double fx, double fy);
@@ -77,7 +75,7 @@ public:
 	double y;
 	double w;
 	double h;
-	double density = 500;
+	double density = 400;
 	Collider* ground_col = nullptr;
 };
 
@@ -122,6 +120,12 @@ public:
 	int textFont = -1;
 
 	bool winc = false;
+
+	// Has physics enabled?
+	bool gravityEnabled = true;
+	bool buoyancyEnabled = true;
+	bool hidroDragEnabled = true;
+	bool aeroDragEnabled = true;
 
 private:
 

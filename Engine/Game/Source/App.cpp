@@ -44,6 +44,9 @@ App::App(int argc, char* args[]) : argc(argc), args(args)
 
 	// Render last to swap buffer
 	AddModule(render);
+
+	frameDuration = new PerfTimer();
+	ptimer = new PerfTimer();
 }
 
 // Destructor
@@ -77,7 +80,9 @@ bool App::Awake()
 		title.create("");
 		win->SetTitle(title.GetString());
 
-		maxFrameRate = 60 * (16 / 60);
+		changeFrameRate = 16;
+		maxFrameRate = changeFrameRate;
+		
 
 		ListItem<Module*>* item;
 		item = modules.start;
@@ -97,7 +102,6 @@ bool App::Start()
 {
 	startupTime.Start();
 	lastSecFrameTime.Start();
-	frameDuration = new PerfTimer();
 
 	bool ret = true;
 	ListItem<Module*>* item;
@@ -170,6 +174,8 @@ void App::FinishUpdate()
 	}
 
 	app->win->SetTitle(title);
+
+	maxFrameRate = changeFrameRate;
 }
 
 // Call modules before each loop iteration
@@ -280,6 +286,19 @@ const char* App::GetOrganization() const
 	return organization.GetString();
 }
 
+
+void App::ChangeFps() 
+{
+	if (changeFrameRate == 16)
+	{
+		changeFrameRate = 32;
+	}
+	else if(changeFrameRate == 32)
+	{
+		changeFrameRate = 16;
+	}
+	LOG("Changed %d", changeFrameRate);
+}
 
 
 

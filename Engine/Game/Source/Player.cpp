@@ -87,12 +87,6 @@ bool Player::Update(float dt)
 		}
 		else if (app->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP)
 		{
-			/*int xM, yM;
-			SDL_GetMouseState(&xM, &yM);
-
-			double objective_x = (double)xM - x;
-			double objective_y = (double)yM - y;*/
-
 			if (strength > 15)
 			{
 				strength = 15;
@@ -174,8 +168,7 @@ bool Player::Update(float dt)
 
 			for (size_t i = app->physics->balls.Count() -1; i > 0 ; i--)
 			{
-				
-				
+				app->col->RemoveCollider(app->physics->balls.At(i)->ball_col);
 				app->physics->balls.Pop(*app->physics->balls.At(i));
 			}
 		}

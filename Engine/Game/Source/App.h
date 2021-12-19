@@ -51,6 +51,8 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
+	void ChangeFps();
+
 private:
 	// Call modules before each loop iteration
 	void PrepareUpdate();
@@ -90,7 +92,7 @@ private:
 
 	List<Module *> modules;
 
-	PerfTimer ptimer;
+	PerfTimer* ptimer;
 
 	Timer startupTime;
 	Timer frameTime;
@@ -104,6 +106,9 @@ private:
 	float dt = 0.0f;
 
 	uint32 maxFrameRate;
+
+	uint32 changeFrameRate;
+
 	PerfTimer* frameDuration;;
 };
 

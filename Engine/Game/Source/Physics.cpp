@@ -9,8 +9,6 @@
 #include "Fonts.h"
 #include <cmath>
 
-// TODO 1: Include Box 2 header and library
-
 Physics::Physics() : Module()
 {
 	debug = true;
@@ -87,7 +85,7 @@ bool Physics::Start()
 	return true;
 }
 
-// 
+
 bool Physics::PreUpdate()
 {
 	if (app->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
@@ -115,7 +113,22 @@ bool Physics::PreUpdate()
 	{
 		movement = 3;
 	}
-
+	else if (app->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+	{
+		gravityEnabled = !gravityEnabled;
+	}
+	else if (app->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+	{
+		buoyancyEnabled = !buoyancyEnabled;
+	}
+	else if (app->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+	{
+		hidroDragEnabled = !hidroDragEnabled;
+	}
+	else if (app->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN)
+	{
+		aeroDragEnabled = !aeroDragEnabled;
+	}
 	return true;
 }
 
@@ -139,10 +152,9 @@ bool Physics::Update(float dt)
 		double fbu = -fbuoiancy;
 
 		//Hidrodynamic Drag
-		double H = 10; //variable a cambiar
+		double H = 20; //variable a cambiar
 		double Vfh = sqrt(pow(balls.At(i)->vx, 2) + pow(balls.At(i)->vy, 2));
 
-		
 		double Dfhx = -(balls.At(i)->vx / Vfh);
 		double Dfhy = -(balls.At(i)->vy / Vfh);
 
@@ -151,27 +163,28 @@ bool Physics::Update(float dt)
 
 		//Aerodynamic Drag
 		double Fdx = balls.At(i)->vx * balls.At(i)->vx * balls.At(i)->surface * balls.At(i)->cd;
-		
 		double Fdy = balls.At(i)->vy * balls.At(i)->vy * balls.At(i)->surface * balls.At(i)->cd;
 
 		// Add forces to the total accumulated force of the ball
 		if (balls.At(i)->physics_enabled)
 		{
-			balls.At(i)->fx += Fdx;
-			balls.At(i)->fy += Fdy;
-			if (balls.At(i)->gravity_enabled)
+			if (aeroDragEnabled) 
 			{
-				app->fonts->BlitText(0, 0, textFont, "||Gravity: Enabled||");
-				balls.At(i)->fy += fgy;   //Gravity
+				balls.At(i)->fx += Fdx;     //Aerodynamic Drag
+				balls.At(i)->fy += Fdy;
+			}
+			if (gravityEnabled)
+			{
+				balls.At(i)->fy += fgy;     //Gravity
 				balls.At(i)->fx += fgx;
 			}
 			if (balls.At(i)->y >= ground->y - balls.At(i)->rad && balls.At(i)->x >agua->x && balls.At(i)->x < platform->x)
 			{
-				if(balls.At(i)->buoyancy_enabled)   //Buoyancy
+				if(buoyancyEnabled)         //Buoyancy
 				{
 					balls.At(i)->fy += fbu;
 				}
-				if (balls.At(i)->HidroDrag_enabled)
+				if (hidroDragEnabled)
 				{
 					balls.At(i)->fy += Fhdy;   //Hidrodynamic Drag	
 					balls.At(i)->fx += Fhdx;
@@ -193,25 +206,67 @@ bool Physics::Update(float dt)
 		// We will use the 2nd order "Velocity Verlet" method for integration.
 		float new_dt = dt / 1000;
 
-		//balls.At(i)->vx += balls.At(i)->vx * dh;
-		
 		switch (integer)
 		{
 		case 1:
 			Integrator_velocity_verlet(balls.At(i), new_dt);
-			app->fonts->BlitText(0, 0, textFont, "|Integrator: Verlet|");
+			app->fonts->BlitText(0, 0, textFont, "|(1, 2, 3) Integrator: Verlet|");
 			break;
 		case 2:
 			Integrator_forward_euler(balls.At(i), new_dt);
-			app->fonts->BlitText(0, 0, textFont, "|Integrator: Forward Euler|");
+			app->fonts->BlitText(0, 0, textFont, "|(1, 2, 3) Integrator: Forward Euler|");
 			break;
 		case 3:
 			Integrator_backwards_euler(balls.At(i), new_dt);
-			app->fonts->BlitText(0, 0, textFont, "|Integrator: Backwards Euler|");
+			app->fonts->BlitText(0, 0, textFont, "|(1, 2, 3) Integrator: Backwards Euler|");
 			break;
 		default:
 			break;
 		}
+
+		switch (movement)
+		{
+		case 1:
+			app->fonts->BlitText(0, 0, textFont, "||(4, 5, 6) Movement: Velocity");
+			break;
+		case 2:
+			app->fonts->BlitText(0, 0, textFont, "||(4, 5, 6) Movement: Force");
+			break;
+		case 3:
+			app->fonts->BlitText(0, 0, textFont, "||(4, 5, 6) Movement: Position");
+			break;
+		default:
+			break;
+		}
+
+		if (gravityEnabled) {
+			app->fonts->BlitText(0, 0, textFont, "|||(7) Gravity: Enabled");
+		}
+		else {
+			app->fonts->BlitText(0, 0, textFont, "|||(7) Gravity: Disabled");
+		}
+
+		if (buoyancyEnabled) {
+			app->fonts->BlitText(0, 0, textFont, "||||(8) Buoyancy: Enabled");
+		}
+		else {
+			app->fonts->BlitText(0, 0, textFont, "||||(8) Buoyancy: Disabled");
+		}
+
+		if (hidroDragEnabled) {
+			app->fonts->BlitText(0, 0, textFont, "|||||(9) Hidrodynamic Drag: Enabled");
+		}
+		else {
+			app->fonts->BlitText(0, 0, textFont, "|||||(9) Hidrodynamic Drag: Disabled");
+		}
+
+		if (aeroDragEnabled) {
+			app->fonts->BlitText(0, 0, textFont, "||||||(0) Aerodynamic Drag: Enabled");
+		}
+		else {
+			app->fonts->BlitText(0, 0, textFont, "||||||(0) Aerodynamic Drag: Disabled");
+		}
+
 
 		if (balls.At(i)->ball_col != nullptr) {
 			balls.At(i)->ball_col->SetPos(balls.At(i)->x - balls.At(i)->rad, balls.At(i)->y - balls.At(i)->rad);
@@ -234,52 +289,27 @@ bool Physics::Update(float dt)
 		{
 			balls.At(i)->x = 0 + balls.At(i)->rad;
 			balls.At(i)->vx = -balls.At(i)->vx * 0.5;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
 		}
 
-		//Right Wall
+		//Right Screen Wall
 		if (balls.At(i)->x >= PIXELS_TO_METERS(1280))
 		{
 			balls.At(i)->x = PIXELS_TO_METERS(1280) - balls.At(i)->rad;
 			balls.At(i)->vx = -balls.At(i)->vx * 0.5;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
 		}
 
-		//Top Wall
+		//Top Screen Wall
 		if (balls.At(i)->y <= 0)
 		{
 			balls.At(i)->y = 0 + balls.At(i)->rad;
 			balls.At(i)->vy = -balls.At(i)->vy * 0.5;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
 		}
 
+		//Bottom Screen Wall
 		if (balls.At(i)->y >= PIXELS_TO_METERS(720))
 		{
-			//balls.At(i)->y = PIXELS_TO_METERS(720) - balls.At(i)->rad;
 			balls.At(i)->vy = balls.At(i)->vy* 0.7;
-			if (balls.At(i)->vy > -0.01 && balls.At(i)->vy < 0.01)
-			{
-				balls.At(i)->vy = 0.0;
-				balls.At(i)->gravity_enabled = false;
-			}
-			//ball->physics_enabled = false;
 		}
-
 	}	
 
 	return true;
@@ -471,8 +501,6 @@ void Physics::OnCollision(Collider* c2, Collider* c1) {
 
 bool Physics::PostUpdate()
 {
-	// TODO 5: On space bar press, create a circle on mouse position
-	// - You need to transform the position / radius
 
 	if (app->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
@@ -590,8 +618,6 @@ dPoint Ball::GetVelocity()
 bool Physics::CleanUp()
 {
 	LOG("Destroying physics world");
-
-	// Delete the whole physics world!
 
 	return true;
 }

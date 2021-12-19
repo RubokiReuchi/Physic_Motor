@@ -33,9 +33,6 @@ bool Scene::Awake()
 // Called before the first frame
 bool Scene::Start()
 {
-	//img = app->tex->Load("Assets/textures/test.png");
-	//app->audio->PlayMusic("Assets/audio/music/music_spy.ogg");
-
 	char lookupTableChars[] = { " !'#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[/]^_ abcdefghijklmnopqrstuvwxyz{|}~ çüéâäàaçêëèïîìäaéÆæôöòûù" };
 	textFont = app->fonts->Load("Assets/pixel_font.png", lookupTableChars, 8);
 	
@@ -51,18 +48,10 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-	/*if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		app->render->camera.y -= 1;
+	
+	if (app->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+		app->ChangeFps();
 
-	if(app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		app->render->camera.y += 1;
-
-	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		app->render->camera.x -= 1;
-
-	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		app->render->camera.x += 1;
-	*/
 
 	if (app->col->debug == false) {
 		app->fonts->BlitText(0, 0, textFont, "F2 TO SHOW COLIDERS");
@@ -70,10 +59,11 @@ bool Scene::Update(float dt)
 	if (app->col->debug == true) {
 		app->fonts->BlitText(0, 0, textFont, "F2 TO HIDE COLIDERS");
 	}
+		app->fonts->BlitText(0, 0, textFont, "                         F3 TO TOGGLE FPS");
 
 	sprintf_s(ballsLeft, 3, "%02d", 11 - app->physics->balls.Count());
-	app->fonts->BlitText(0, 0, textFont, "|||BALLS LEFT: ");
-	app->fonts->BlitText(12*10 + 12, 20*3 +3, textFont, ballsLeft);
+	app->fonts->BlitText(0, 0, textFont, "|||||||BALLS LEFT: ");
+	app->fonts->BlitText(12*10 + 12, 20*7 +7, textFont, ballsLeft);
 	
 	return true;
 }
