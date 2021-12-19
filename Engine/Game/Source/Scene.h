@@ -33,6 +33,7 @@ public:
 	bool CleanUp();
 
 	int textFont = -1;
+	char ballsLeft[3] = { "\0" };
 
 private:
 	SDL_Texture* img;

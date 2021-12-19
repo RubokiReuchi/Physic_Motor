@@ -125,6 +125,7 @@ bool Render::DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* sec
 
 	rect.w *= scale;
 	rect.h *= scale;
+	SDL_SetTextureColorMod(texture, r, g, b);
 
 	SDL_Point* p = NULL;
 	SDL_Point pivot;

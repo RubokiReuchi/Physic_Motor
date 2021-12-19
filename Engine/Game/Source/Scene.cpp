@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "Fonts.h"
 #include "Collisions.h"
+#include "Physics.h"
 
 #include "Defs.h"
 #include "Log.h"
@@ -63,12 +64,17 @@ bool Scene::Update(float dt)
 		app->render->camera.x += 1;
 	*/
 
-	if (app->col->debug == true) {
-		app->fonts->BlitText(0, 0, textFont, "-SAMPLE TEXT-|AAAAAAAAAAAAAAAAAAAA|-SAMPLE TEXT-|AAAAAAAAAAAAAAAAAAAA|-SAMPLE TEXT-|AAAAAAAAAAAAAAAAAAAA|");
+	if (app->col->debug == false) {
+		app->fonts->BlitText(0, 0, textFont, "F2 TO SHOW COLIDERS");
 	}
+	if (app->col->debug == true) {
+		app->fonts->BlitText(0, 0, textFont, "F2 TO HIDE COLIDERS");
+	}
+
+	sprintf_s(ballsLeft, 3, "%02d", 11 - app->physics->balls.Count());
+	app->fonts->BlitText(0, 0, textFont, "|||BALLS LEFT: ");
+	app->fonts->BlitText(12*10 + 12, 20*3 +3, textFont, ballsLeft);
 	
-
-
 	return true;
 }
 

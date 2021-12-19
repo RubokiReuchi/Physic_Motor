@@ -1,3 +1,17 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(477,5): warning MSB8004: El directorio Output no termina con una barra diagonal final. Esta instancia de compilación agregará la barra diagonal porque es necesaria para que se pueda evaluar correctamente el directorio Output.
-  Scene.cpp
-  Game.vcxproj -> X:\Users\xavie\Documents\GitHub\Physic_Motor\Engine\Build\Debug\Game.exe
+  Player.cpp
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(37,35): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(38,35): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(196,59): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(196,36): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(196,29): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(196,25): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(200,60): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(200,36): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(200,29): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(200,25): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(204,70): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(204,36): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(204,29): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Game\Source\Player.cpp(204,25): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+  Game.vcxproj -> X:\Users\xavie\Downloads\Physic_Motor-main (1)\Physic_Motor-main\Engine\Build\Debug\Game.exe

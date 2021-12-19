@@ -29,11 +29,15 @@ public:
 
 	void OnCollision(Collider* c1, Collider* c2) override;
 
+	int textFont = -1;
+	
+
 private:
 	int x, y, r = 5;
 	float speed = 5;
 
 	int body;
+	int losec;
 
 	double angle_shot = 0;
 	double strength = 0;
